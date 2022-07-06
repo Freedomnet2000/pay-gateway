@@ -32,7 +32,12 @@ class CreateSaleController extends BaseController
         $amount=  $saleData['sale_price'];
         $currency= $saleData['currency'];
 
-        DB::insert('insert into sales (id, time, sale_number, description, amonut, currency, url) values (?, ? ,? ,? ,? ,?,?)', ['2', $time, $payme_sale_code,$description, $amount, $currency, $sale_url]);
+
+        $lastTableQuery = DB::select('select id from sales order by id desc limit 1') ;
+//
+        $lastIdTable= Json_decode(json_encode($lastTableQuery[0]));
+        $newId = $lastIdTable? $lastIdTable->id +1: 1;
+        DB::insert('insert into sales (id, time, sale_number, description, amonut, currency, url) values (?, ? ,? ,? ,? ,?,?)', [$newId, $time, $payme_sale_code,$description, $amount, $currency, $sale_url]);
         return view('paymentIframe', ['paymentUrl' => $sale_url, 'code' => $payme_sale_code ]);
 
     }

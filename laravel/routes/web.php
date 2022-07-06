@@ -16,3 +16,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('saleForm');
 });
+
+Route::get('/get-sale',[App\Http\Controllers\CreateSaleController::class, 'getSale']);
+

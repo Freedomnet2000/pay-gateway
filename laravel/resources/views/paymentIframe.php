@@ -25,5 +25,78 @@
 </div>
 
 
+    <input type="Submit" name="show" id="show" class="btn btn-success" value="Payment">
+    <input type="hidden" name="code" id="code" class="btn btn-success" value="<?php echo $code;?>">
+
+<div class="tableToggle" style="display:none;" >
+
+    <table id="sale" class="table table-bordered table-striped table-hover">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Sale Number </th>
+            <th scope="col">Description</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Currency</th>
+            <th scope="col">Payment Link</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+<script>
+    $(document).ready(function() {
+        let request;
+
+        $("#show").click(function (event) {
+            event.preventDefault();
+            let code = $('#code').val();
+            request = $.ajax({
+                url: './show-sale',
+                type: "get",
+                data: {'code': code}
+            });
+
+            // Disable Submit Till Ajax Returns
+            $(':input[type="submit"]').prop('disabled', true);
+
+            request.done(function (response){
+                let X=1
+                if (x=1) {
+                    $('.tableToggle').show();
+
+                    let row = $("<tr><td>"+response.id
+                        +"</td><td>" + code
+                        +"</td><td>" + response.description
+                        +"</td><td>" + response.amonut
+                        +"</td><td>" + response.currency
+                        +"</td><td>" + response.url
+                        +"</td>");
+
+                    $("#sale > tbody").append(row);
+                    let x=1;
+                }
+                else {
+                    $('.alert').html('no record found for customer : '+ customerIdInput).show();
+                }
+            });
+
+            // Callback handler that will be called on failure
+            request.fail(function (jqXHR, textStatus, errorThrown){
+                // Log the error to the console
+                console.error(
+                    "The following error occurred: "+
+                    textStatus, errorThrown
+                );
+            });
+
+            // Enable Submit button back
+            request.always(function() {
+                $(':input[type="submit"]').prop('disabled', false);
+            });
+        });
+    });
+</script>
 </body>
 </html>

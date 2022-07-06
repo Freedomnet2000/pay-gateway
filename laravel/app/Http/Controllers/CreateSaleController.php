@@ -20,6 +20,11 @@ class CreateSaleController extends BaseController
 
         $paymentInfo=json_decode($this->getPaymentUrl($saleData),true);
 
+        if ($paymentInfo['status_code']!=0) {
+            $message = $paymentInfo['status_error_details'];
+            return Response ($message);
+        }
+
         $time=now();
         $sale_url= $paymentInfo['sale_url'];
         $payme_sale_code= $paymentInfo['payme_sale_code'];
@@ -28,7 +33,7 @@ class CreateSaleController extends BaseController
         $currency= $saleData['currency'];
 
         DB::insert('insert into sales (id, time, sale_number, description, amonut, currency, url) values (?, ? ,? ,? ,? ,?,?)', ['2', $time, $payme_sale_code,$description, $amount, $currency, $sale_url]);
-        return view('paymentIframe', ['paymentUrl' => $sale_url]);
+        return view('paymentIframe', ['paymentUrl' => $sale_url, 'code' => $payme_sale_code ]);
 
     }
 
@@ -36,7 +41,7 @@ class CreateSaleController extends BaseController
      public function getPaymentUrl($saleData)
          {
              $saleData['seller_payme_id'] = "MPL14985-68544Z1G-SPV5WK2K-0WJWHC7N";
-             $saleData['sale_price'] = $saleData['sale_price']*100;
+             $saleData['sale_price'] = is_numeric($saleData['sale_price'])? $saleData['sale_price']*100 : false;
              $saleData['installments'] = "1";
              $saleData['language'] = "en";
 
@@ -49,7 +54,6 @@ class CreateSaleController extends BaseController
 
             $response = curl_exec($ch);
 
-//        return json_decode($response, false)->sale_url;
          return ($response);
      }
 

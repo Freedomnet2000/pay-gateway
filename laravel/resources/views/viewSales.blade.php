@@ -26,46 +26,12 @@
 <body>
 <p class="h2 text-center"> New Sale Creation </p>
 
-<form action="<?php echo url("get-sale");?>" method="get" id="smsform">
 
 <table class="table table-condensed">
-    <tr>
-        <td>
-            <div class="form-group">
-                <label for="prodName">Enter Product Name</label>
-                <input type="text" class="form-control" id="prodName" name="prodName" placeholder="Enter Product Name">
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <div class="form-group">
-                <label for="price">Enter Price</label>
-                <input type="text" class="form-control" id="price" name="price" placeholder="Enter Price">
-            </div>
-        </td>
-    </tr>
+    <th>
 
-    <tr>
-        <td>
-            <div class="form-group">
-                <label for="currency">Select currency</label>
-                <select name="currency" id="currency" class="form-control">
-                    <option value="ILS">ILS</option>
-                    <option value="USD" selected>USD</option>
-                    <option value="EUR">EUR</option>
-
-                </select>
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <input type="submit" class="btn btn-success" value="Submit">
-        </td>
-    </tr>
+    </th>
 </table>
-</form>
 
 
 </body>

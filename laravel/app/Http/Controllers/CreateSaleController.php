@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Support\Facades\View;
 use Symfony\Component\HttpFoundation\Request;
+use Illuminate\Support\Facades\DB;
+
 
 class CreateSaleController extends BaseController
 {
@@ -20,10 +18,17 @@ class CreateSaleController extends BaseController
         $saleData['sale_price'] = $request->get('price');
         $saleData['currency'] = $request->get('currency');
 
-        $iframeUrl=$this->getPaymentUrl($saleData);
+        $paymentInfo=json_decode($this->getPaymentUrl($saleData),true);
 
+        $time=now();
+        $sale_url= $paymentInfo['sale_url'];
+        $payme_sale_code= $paymentInfo['payme_sale_code'];
+        $description= $saleData['product_name'];
+        $amount=  $saleData['sale_price'];
+        $currency= $saleData['currency'];
 
-        return view('paymentIframe', ['paymentUrl' => $iframeUrl]);
+        DB::insert('insert into sales (id, time, sale_number, description, amonut, currency, url) values (?, ? ,? ,? ,? ,?,?)', ['2', $time, $payme_sale_code,$description, $amount, $currency, $sale_url]);
+        return view('paymentIframe', ['paymentUrl' => $sale_url]);
 
     }
 
@@ -44,7 +49,8 @@ class CreateSaleController extends BaseController
 
             $response = curl_exec($ch);
 
-        return json_decode($response, false)->sale_url;
+//        return json_decode($response, false)->sale_url;
+         return ($response);
      }
 
 }

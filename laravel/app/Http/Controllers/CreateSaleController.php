@@ -34,7 +34,7 @@ class CreateSaleController extends BaseController
 
 
         $lastTableQuery = DB::select('select id from sales order by id desc limit 1') ;
-//
+
         $lastIdTable= Json_decode(json_encode($lastTableQuery[0]));
         $newId = $lastIdTable? $lastIdTable->id +1: 1;
         DB::insert('insert into sales (id, time, sale_number, description, amonut, currency, url) values (?, ? ,? ,? ,? ,?,?)', [$newId, $time, $payme_sale_code,$description, $amount, $currency, $sale_url]);

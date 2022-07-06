@@ -19,7 +19,6 @@ Route::get('/', function () {
 
 Route::get('/get-sale',[App\Http\Controllers\CreateSaleController::class, 'getSale']);
 
-Route::get('/show-sale',[App\Http\Controllers\ViewSaleController::class, 'showSales']);
 
 
 

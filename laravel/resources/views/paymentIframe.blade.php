@@ -53,7 +53,7 @@
             event.preventDefault();
             let code = $('#code').val();
             request = $.ajax({
-                url: './show-sale',
+                url: './api/show-sale',
                 type: "get",
                 data: {'code': code}
             });

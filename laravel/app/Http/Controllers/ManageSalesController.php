@@ -52,12 +52,11 @@ class ManageSalesController extends BaseController
             ), 401);
         } else {
             $msg= "Sale $sale_number has been updated successfully";
-}
             return json_encode(array(
                 'code'      =>  200,
                 'message'   =>  $msg
             ), 200);
-
+        }
     }
 
     public function ValidateVariables($data)
@@ -66,8 +65,21 @@ class ManageSalesController extends BaseController
         return true;
     }
 
-    private function buildQuery($data, $action)
+    public function deleteSaleByCode(Request $request)
     {
-
+        $sale_number = $request->get('code');
+        $delete = DB::delete('delete from sales where sale_number = ?', [$sale_number]);
+        if (!$delete) {
+            return json_encode(array(
+                'code'      =>  500,
+                'message'   =>  'Could not delete the sale - DB Issue'
+            ), 500);
+        } else {
+            $msg= "Sale $sale_number has been deleted successfully";
+            return json_encode(array(
+                'code'      =>  200,
+                'message'   =>  $msg
+            ), 200);
+        }
     }
 }

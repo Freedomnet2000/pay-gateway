@@ -11,12 +11,22 @@ use Symfony\Component\HttpFoundation\Response;
 class ManageSalesController extends BaseController
 {
 
+    private string $sale_number;
+
     public function GetSaleByCode(Request $request)
     {
-        $sale_number = $request->get('code');
-        $sales = DB::select('select * from sales where sale_number = ?', [$sale_number]);
-        return json_decode(json_encode($sales[0]));
+        $this->sale_number = $request->get('code');
+        $sales = DB::select('select * from sales where sale_number = ?', [$this->sale_number]);
+        if  (count($sales) === 0) {
+            return json_encode(array(
+                'code'      =>  500,
+                'message'   =>  "Could not find sale $this->sale_number"
+            ), 401);
+        } else {
+            return json_decode(json_encode($sales[0]));
+        }
     }
+
 
     public function GetAllSales()
     {

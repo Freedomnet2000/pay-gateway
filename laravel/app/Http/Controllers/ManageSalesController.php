@@ -66,4 +66,8 @@ class ManageSalesController extends BaseController
         return true;
     }
 
+    private function buildQuery($data, $action)
+    {
+
+    }
 }

@@ -11,11 +11,11 @@ class CreateSaleController extends BaseController
 {
 
 
-    public function getSale(Request $request)
+    public function addSale(Request $request)
     {
         $saleData = [];
-        $saleData['product_name'] = $request->get('prodName');
-        $saleData['sale_price'] = $request->get('price');
+        $saleData['product_name'] = $request->get('description');
+        $saleData['sale_price'] = $request->get('sale_price');
         $saleData['currency'] = $request->get('currency');
 
         $paymentInfo=json_decode($this->getPaymentUrl($saleData),true);

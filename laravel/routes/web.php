@@ -17,7 +17,7 @@ Route::get('/', function () {
     return view('saleForm');
 });
 
-Route::get('/get-sale',[App\Http\Controllers\CreateSaleController::class, 'getSale']);
+Route::get('/add-sale',[App\Http\Controllers\CreateSaleController::class, 'addSale']);
 
 
 

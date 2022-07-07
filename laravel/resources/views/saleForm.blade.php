@@ -26,14 +26,14 @@
 <body>
 <p class="h2 text-center"> New Sale Creation </p>
 
-<form action="<?php echo url("get-sale");?>" method="get" id="smsform">
+<form action="<?php echo url("add-sale");?>" method="get" id="smsform">
 
 <table class="table table-condensed">
     <tr>
         <td>
             <div class="form-group">
-                <label for="prodName">Enter Product Name</label>
-                <input type="text" class="form-control" id="prodName" name="prodName" placeholder="Enter Product Name">
+                <label for="description">Enter Product Name</label>
+                <input type="text" class="form-control" id="description" name="description" placeholder="Enter description">
             </div>
         </td>
     </tr>
@@ -41,7 +41,7 @@
         <td>
             <div class="form-group">
                 <label for="price">Enter Price</label>
-                <input type="text" class="form-control" id="price" name="price" placeholder="Enter Price">
+                <input type="text" class="form-control" id="sale_price" name="sale_price" placeholder="Enter Price">
             </div>
         </td>
     </tr>

@@ -62,10 +62,7 @@
             $(':input[type="submit"]').prop('disabled', true);
 
             request.done(function (response){
-                let X=1
-                if (x=1) {
-                    $('.tableToggle').show();
-
+                      $('.tableToggle').show();
                     let row = $("<tr><td>"+response.id
                         +"</td><td>" + code
                         +"</td><td>" + response.description
@@ -75,11 +72,6 @@
                         +"</td>");
 
                     $("#sale > tbody").append(row);
-                    let x=1;
-                }
-                else {
-                    $('.alert').html('no record found for customer : '+ customerIdInput).show();
-                }
             });
 
             // Callback handler that will be called on failure

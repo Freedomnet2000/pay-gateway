@@ -36,7 +36,7 @@ class CreateSaleTest extends TestCase
         $fakeDataArry['currency'] = 'USDD';
         $saleCreate = new CreateSaleController();
         $response= json_decode($saleCreate->getPaymentUrl($fakeDataArry),true);
-        $this->assertArrayHasKey('sale_url', $response);
+        $this->assertArrayNotHasKey('sale_url', $response);
 
     }
 

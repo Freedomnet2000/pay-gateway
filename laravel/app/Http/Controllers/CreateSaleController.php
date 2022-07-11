@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Libraries\PaymentApi;
 use Illuminate\Routing\Controller as BaseController;
 use Symfony\Component\HttpFoundation\Request;
 use Illuminate\Support\Facades\DB;
@@ -13,12 +14,14 @@ class CreateSaleController extends BaseController
 
     public function addSale(Request $request)
     {
-        $saleData = [];
-        $saleData['product_name'] = $request->get('description');
-        $saleData['sale_price'] = $request->get('sale_price');
-        $saleData['currency'] = $request->get('currency');
 
-        $paymentInfo=json_decode($this->getPaymentUrl($saleData),true);
+        $paymentApi = new PaymentApi();
+        $salePrice = is_numeric($request->get('sale_price'))? $request->get('sale_price')*100 : false;
+        $paymentApi-> setSalePrice($salePrice);
+        $paymentApi-> setProductName($request->get('description'));
+        $paymentApi-> setCurrency( $request->get('currency'));
+
+        $paymentInfo= json_decode($paymentApi->getPaymentData(),true);
 
         if ($paymentInfo['status_code']!=0) {
             $message = $paymentInfo['status_error_details'];
@@ -28,9 +31,9 @@ class CreateSaleController extends BaseController
         $time=now();
         $sale_url= $paymentInfo['sale_url'];
         $payme_sale_code= $paymentInfo['payme_sale_code'];
-        $description= $saleData['product_name'];
-        $amount=  $saleData['sale_price'];
-        $currency= $saleData['currency'];
+        $description= $request->get('description');
+        $amount=  $request['sale_price'];
+        $currency= $request['currency'];
 
 
         $lastTableQuery = DB::select('select id from sales order by id desc limit 1') ;
@@ -43,23 +46,6 @@ class CreateSaleController extends BaseController
     }
 
 
-     public function getPaymentUrl($saleData)
-         {
-             $saleData['seller_payme_id'] = "MPL14985-68544Z1G-SPV5WK2K-0WJWHC7N";
-             $saleData['sale_price'] = is_numeric($saleData['sale_price'])? $saleData['sale_price']*100 : false;
-             $saleData['installments'] = "1";
-             $saleData['language'] = "en";
 
-            $dataToSend = json_encode($saleData);
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, "https://preprod.paymeservice.com/api/generate-sale");
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $dataToSend);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-            $response = curl_exec($ch);
-
-         return ($response);
-     }
 
 }

@@ -14,9 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/show-sale',[App\Http\Controllers\ManageSalesController::class, 'GetSaleByCode']);
-Route::get('/all-sales',[App\Http\Controllers\ManageSalesController::class, 'GetAllSales']);
-Route::get('/update-sale',[App\Http\Controllers\ManageSalesController::class, 'updateSaleByCode']);
-Route::get('/delete-sale',[App\Http\Controllers\ManageSalesController::class, 'deleteSaleByCode']);
+Route::get('/sales',[App\Http\Controllers\ManageSalesController::class, 'GetAllSales']);
+Route::get('/sales/{sale}',[App\Http\Controllers\ManageSalesController::class, 'GetSaleByCode']);
+Route::put('/sales/{sale}',[App\Http\Controllers\ManageSalesController::class, 'updateSaleByCode']);
+Route::delete('/sales/{sale}',[App\Http\Controllers\ManageSalesController::class, 'deleteSaleByCode']);
+Route::post('/sales',[App\Http\Controllers\CreateSaleController::class, 'addSale']);
 
 

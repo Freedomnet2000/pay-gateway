@@ -52,10 +52,11 @@
         $("#show").click(function (event) {
             event.preventDefault();
             let code = $('#code').val();
+            let urlCall = './api/sales/'+code,
             request = $.ajax({
-                url: './api/show-sale',
+                url: urlCall,
                 type: "get",
-                data: {'code': code}
+                // data: {'code': code}
             });
 
             // Disable Submit Till Ajax Returns
@@ -63,10 +64,11 @@
 
             request.done(function (response){
                       $('.tableToggle').show();
+                      let sale_price = response.sale_price /100
                     let row = $("<tr><td>"+response.id
                         +"</td><td>" + code
                         +"</td><td>" + response.description
-                        +"</td><td>" + response.amonut
+                        +"</td><td>" + sale_price
                         +"</td><td>" + response.currency
                         +"</td><td>" + response.url
                         +"</td>");

@@ -11,18 +11,21 @@ use Symfony\Component\HttpFoundation\Request;
 class ManageSalesController extends BaseController
 {
 
-    private string $sale_number;
 
-    public function GetSaleByCode(Request $request)
+    /**
+     * Update the specified sale.
+     *
+     * @param  string  $sale_number
+     */
+    public function GetSaleByCode($sale_number)
     {
-        $this->sale_number = $request->get('code');
         $getSaleRaw = new SaleManagementModel();
-        $getSaleRaw->setPaymeSaleCode($this->sale_number);
+        $getSaleRaw->setPaymeSaleCode($sale_number);
         $saleByCode = $getSaleRaw->getSalesDataByCode();
         if  (!$saleByCode->isDbResult()) {
             return json_encode(array(
                 'code'      =>  200,
-                'message'   =>  "Could not find sale $this->sale_number"
+                'message'   =>  "Could not find sale $sale_number"
             ), 200);
         } else {
             return json_decode(json_encode($saleByCode->getSalesInfo()[0]));
@@ -45,7 +48,14 @@ class ManageSalesController extends BaseController
         }
     }
 
-    public function updateSaleByCode(Request $request)
+    /**
+     * Update the specified sale.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param string $sale_number
+     */
+
+    public function updateSaleByCode(Request $request , string $sale_number)
     {
         $data = (array) $request->all();
         if (!$this->ValidateVariables($data)) {
@@ -56,9 +66,9 @@ class ManageSalesController extends BaseController
         }
 
         $updateSale = new SaleManagementModel();
-        $updateSale->setPaymeSaleCode( $data['sale_number']);
+        $updateSale->setPaymeSaleCode($sale_number);
         $updateSale->setDescription( $data['description']);
-        $updateSale->setSalePrice( $data['amonut']); // TODO - need to fix the typo
+        $updateSale->setSalePrice( $data['sale_price']); // TODO - need to fix the typo
         $updateSale->setCurrency( $data['currency']);
         $updateSale->setPaymeSaleCode( $data['sale_number']);
         $updateSale->setSaleUrl($data['url']);
@@ -80,18 +90,16 @@ class ManageSalesController extends BaseController
     }
 
 
-    public function deleteSaleByCode(Request $request)
-    {
-        $data = (array)$request->all();
-        if (!$this->ValidateVariables($data)) {
-            return json_encode(array(
-                'code' => 401,
-                'message' => 'Invalid params'
-            ), 401);
-        }
+    /**
+     * Delete the specified sale.
+     *
+     * @param  string  $sale_number
+     */
 
+    public function deleteSaleByCode($sale_number)
+    {
         $updateSale = new SaleManagementModel();
-        $updateSale->setPaymeSaleCode($data['sale_number']);
+        $updateSale->setPaymeSaleCode($sale_number);
         $delete = $updateSale->deleteSale();
         $payme_sale_code = $delete->getPaymeSaleCode();
         if (!$delete->isDbResult()) {

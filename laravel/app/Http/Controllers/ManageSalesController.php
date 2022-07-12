@@ -5,8 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\SaleManagementModel;
 use Illuminate\Routing\Controller as BaseController;
 use Symfony\Component\HttpFoundation\Request;
-use Illuminate\Support\Facades\DB;
-use Symfony\Component\HttpFoundation\Response;
+
 
 
 class ManageSalesController extends BaseController

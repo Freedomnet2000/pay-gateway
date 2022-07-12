@@ -4,7 +4,6 @@ namespace App\Models;
 
 
 use Illuminate\Support\Facades\DB;
-use phpDocumentor\Reflection\Types\True_;
 
 class SaleManagementModel
 {

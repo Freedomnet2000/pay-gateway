@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SaleManagement;
 use Illuminate\Routing\Controller as BaseController;
 use Symfony\Component\HttpFoundation\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,22 +17,33 @@ class ManageSalesController extends BaseController
     public function GetSaleByCode(Request $request)
     {
         $this->sale_number = $request->get('code');
-        $sales = DB::select('select * from sales where sale_number = ?', [$this->sale_number]);
-        if  (count($sales) === 0) {
+        $getSaleRaw = new SaleManagement();
+        $getSaleRaw->setPaymeSaleCode($this->sale_number);
+        $saleByCode = $getSaleRaw->getSalesDataByCode();
+        if  (!$saleByCode->isDbResult()) {
             return json_encode(array(
-                'code'      =>  500,
+                'code'      =>  200,
                 'message'   =>  "Could not find sale $this->sale_number"
-            ), 401);
+            ), 200);
         } else {
-            return json_decode(json_encode($sales[0]));
+            return json_decode(json_encode($saleByCode[0]));
         }
     }
 
 
     public function GetAllSales()
     {
-        $sales = DB::select('select * from sales ');
-        return json_decode(json_encode($sales));
+        $getSales = new SaleManagement();
+        $sales = $getSales->getAllales();
+
+        if  (!$sales->isDbResult()) {
+            return json_encode(array(
+                'code'      =>  200,
+                'message'   =>  "Could not find sales"
+            ), 200);
+        } else {
+            return json_decode(json_encode($sales->getSalesInfo()));
+        }
     }
 
     public function updateSaleByCode(Request $request)

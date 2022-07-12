@@ -4,6 +4,7 @@ namespace App\Models;
 
 
 use Illuminate\Support\Facades\DB;
+use phpDocumentor\Reflection\Types\True_;
 
 class SaleManagement
 {
@@ -17,9 +18,26 @@ class SaleManagement
         $sale_url = $this->getSaleUrl();
 
         $query ="insert into sales ( time, sale_number, description, sale_price, currency, url) values ( '$time' ,$payme_sale_code ,'$description' ,$salePrice , '$currency','$sale_url')";
-        $this->dbResult = DB::insert($query);
+        $result= DB::insert($query);
+        $this->setDbResult(true);
         return $this;
     }
+
+    public function getSalesDataByCode() {
+        $payme_sale_code= $this->getPaymeSaleCode();
+        $query ="select * from sales where sale_number =$payme_sale_code";
+        $this->setSalesInfo( DB::select($query));
+        $this->setDbResult(count($this->salesInfo) > 0);
+        return $this;
+    }
+
+    public function getAllales() {
+        $query ="select * from sales ";
+        $this->setSalesInfo( DB::select($query));
+        $this->setDbResult(count($this->salesInfo) > 0);
+        return $this;
+    }
+
 
 
     /**
@@ -56,6 +74,11 @@ class SaleManagement
      * @var bool
      */
     private $dbResult;
+
+    /**
+     * @var array
+     */
+    private $salesInfo;
 
     /**
      * @return string
@@ -168,4 +191,21 @@ class SaleManagement
     {
         $this->dbResult = $dbResult;
     }
+
+    /**
+     * @return array
+     */
+    public function getSalesInfo(): array
+    {
+        return $this->salesInfo;
+    }
+
+    /**
+     * @param array $salesInfo
+     */
+    public function setSalesInfo(array $salesInfo): void
+    {
+        $this->salesInfo = $salesInfo;
+    }
+
 }

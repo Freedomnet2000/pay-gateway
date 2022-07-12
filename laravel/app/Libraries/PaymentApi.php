@@ -7,20 +7,6 @@ use Illuminate\Support\Facades\Config;
 
 class PaymentApi
 {
-    /**
-     * @var string;
-     */
-    private string $product_name;
-
-    /**
-     * @var string;
-     */
-    private string $sale_price;
-
-    /**
-     * @var string;
-     */
-    private string $currency;
 
     public function getPaymentData()
     {
@@ -40,6 +26,21 @@ class PaymentApi
 
         return (curl_exec($ch));
     }
+
+    /**
+     * @var string;
+     */
+    private string $product_name;
+
+    /**
+     * @var string;
+     */
+    private string $sale_price;
+
+    /**
+     * @var string;
+     */
+    private string $currency;
 
     /**
      * @return string

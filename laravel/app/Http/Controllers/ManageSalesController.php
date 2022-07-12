@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\SaleManagement;
+use App\Models\SaleManagementModel;
 use Illuminate\Routing\Controller as BaseController;
 use Symfony\Component\HttpFoundation\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +17,7 @@ class ManageSalesController extends BaseController
     public function GetSaleByCode(Request $request)
     {
         $this->sale_number = $request->get('code');
-        $getSaleRaw = new SaleManagement();
+        $getSaleRaw = new SaleManagementModel();
         $getSaleRaw->setPaymeSaleCode($this->sale_number);
         $saleByCode = $getSaleRaw->getSalesDataByCode();
         if  (!$saleByCode->isDbResult()) {
@@ -26,14 +26,14 @@ class ManageSalesController extends BaseController
                 'message'   =>  "Could not find sale $this->sale_number"
             ), 200);
         } else {
-            return json_decode(json_encode($saleByCode[0]));
+            return json_decode(json_encode($saleByCode->getSalesInfo()[0]));
         }
     }
 
 
     public function GetAllSales()
     {
-        $getSales = new SaleManagement();
+        $getSales = new SaleManagementModel();
         $sales = $getSales->getAllales();
 
         if  (!$sales->isDbResult()) {
@@ -48,7 +48,6 @@ class ManageSalesController extends BaseController
 
     public function updateSaleByCode(Request $request)
     {
-
         $data = (array) $request->all();
         if (!$this->ValidateVariables($data)) {
             return json_encode(array(
@@ -57,23 +56,23 @@ class ManageSalesController extends BaseController
             ), 401);
         }
 
+        $updateSale = new SaleManagementModel();
+        $updateSale->setPaymeSaleCode( $data['sale_number']);
+        $updateSale->setDescription( $data['description']);
+        $updateSale->setSalePrice( $data['amonut']); // TODO - need to fix the typo
+        $updateSale->setCurrency( $data['currency']);
+        $updateSale->setPaymeSaleCode( $data['sale_number']);
+        $updateSale->setSaleUrl($data['url']);
 
-        $sale_number = $data['sale_number'];
-        $description = $data['description'];
-        $amonut = $data['amonut'];  // TODO - need to fix the typo
-        $currency = $data['currency'];
-        $url = $data['url'];
-
-        $sql = "update sales set  description = '$description', amonut = $amonut, currency= '$currency' , url= '$url' where sale_number = $sale_number";
-
-        $update = DB::update($sql);
-        if (!$update) {
+        $update = $updateSale->updateSale();
+        if (!$update->isDbResult()) {
             return json_encode(array(
                 'code'      =>  500,
                 'message'   =>  'Could not update the sale - DB Issue'
             ), 401);
         } else {
-            $msg= "Sale $sale_number has been updated successfully";
+            $payme_sale_code= $update->getPaymeSaleCode();
+            $msg= "Sale $payme_sale_code has been updated successfully";
             return json_encode(array(
                 'code'      =>  200,
                 'message'   =>  $msg
@@ -81,27 +80,37 @@ class ManageSalesController extends BaseController
         }
     }
 
-    public function ValidateVariables($data)
-    {
-       // Needs to check data
-        return true;
-    }
 
     public function deleteSaleByCode(Request $request)
     {
-        $sale_number = $request->get('code');
-        $delete = DB::delete('delete from sales where sale_number = ?', [$sale_number]);
-        if (!$delete) {
+        $data = (array)$request->all();
+        if (!$this->ValidateVariables($data)) {
             return json_encode(array(
-                'code'      =>  500,
-                'message'   =>  'Could not delete the sale - DB Issue'
-            ), 500);
+                'code' => 401,
+                'message' => 'Invalid params'
+            ), 401);
+        }
+
+        $updateSale = new SaleManagementModel();
+        $updateSale->setPaymeSaleCode($data['sale_number']);
+        $delete = $updateSale->deleteSale();
+        $payme_sale_code = $delete->getPaymeSaleCode();
+        if (!$delete->isDbResult()) {
+            return json_encode(array(
+                'code' => 500,
+                'message' => "Could not update the sale - Could not find sale $payme_sale_code"
+            ), 401);
         } else {
-            $msg= "Sale $sale_number has been deleted successfully";
+            $msg = "Sale $payme_sale_code has been deleted successfully";
             return json_encode(array(
-                'code'      =>  200,
-                'message'   =>  $msg
+                'code' => 200,
+                'message' => $msg
             ), 200);
         }
+    }
+    public function ValidateVariables($data)
+    {
+        // Needs to check data
+        return true;
     }
 }

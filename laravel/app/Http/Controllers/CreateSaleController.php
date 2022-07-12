@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Libraries\PaymentApi;
-use App\Models\Sale;
-use App\Models\SaleManagement;
-use Illuminate\Routing\Controller as BaseController;
+use App\Models\SaleManagementModel;
 use Symfony\Component\HttpFoundation\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Routing\Controller as BaseController;
 
 
 class CreateSaleController extends BaseController
@@ -29,7 +27,7 @@ class CreateSaleController extends BaseController
             return Response ($message);
         }
         $payme_sale_code = $paymentInfo['payme_sale_code'];
-        $addSaleRaw = new SaleManagement();
+        $addSaleRaw = new SaleManagementModel();
         $addSaleRaw->setTime(now());
         $addSaleRaw->setSaleUrl($paymentInfo['sale_url']);
         $addSaleRaw->setPaymeSaleCode($payme_sale_code);
@@ -45,8 +43,5 @@ class CreateSaleController extends BaseController
         return view('paymentIframe', ['paymentUrl' => $manageSale->getSaleUrl(), 'code' => $manageSale->getPaymeSaleCode() ]);
 
     }
-
-
-
 
 }

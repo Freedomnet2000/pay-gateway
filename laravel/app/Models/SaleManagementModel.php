@@ -6,26 +6,20 @@ namespace App\Models;
 use Illuminate\Support\Facades\DB;
 use phpDocumentor\Reflection\Types\True_;
 
-class SaleManagement
+class SaleManagementModel
 {
 
     public function addSale() {
-        $time = $this->getTime();
-        $payme_sale_code = $this->getPaymeSaleCode();
-        $description = $this->getDescription();
-        $salePrice = $this->getSalePrice();
-        $currency = $this->getCurrency();
-        $sale_url = $this->getSaleUrl();
 
-        $query ="insert into sales ( time, sale_number, description, sale_price, currency, url) values ( '$time' ,$payme_sale_code ,'$description' ,$salePrice , '$currency','$sale_url')";
+        $query ="insert into sales ( time, sale_number, description, sale_price, currency, url)
+                    values ( '$this->time' ,$this->payme_sale_code ,'$this->description' ,$this->sale_price , '$this->currency','$this->sale_url')";
         $result= DB::insert($query);
-        $this->setDbResult(true);
+        $this->setDbResult($result);
         return $this;
     }
 
     public function getSalesDataByCode() {
-        $payme_sale_code= $this->getPaymeSaleCode();
-        $query ="select * from sales where sale_number =$payme_sale_code";
+        $query ="select * from sales where sale_number =$this->payme_sale_code";
         $this->setSalesInfo( DB::select($query));
         $this->setDbResult(count($this->salesInfo) > 0);
         return $this;
@@ -38,7 +32,19 @@ class SaleManagement
         return $this;
     }
 
+    public function updateSale() {
+        $query= "update sales set  description = '$this->description', sale_price = $this->sale_price, currency= '$this->currency' , url= '$this->sale_url' where sale_number = $this->payme_sale_code";
+        $result= DB::UPDATE($query);
+        $this->setDbResult($result);
+        return $this;
+    }
 
+    public function deleteSale() {
+        $query= "delete from sales  where sale_number = $this->payme_sale_code";
+        $result= DB::DELETE($query);
+        $this->setDbResult($result);
+        return $this;
+    }
 
     /**
      * @var string
